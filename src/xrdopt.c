@@ -84,6 +84,8 @@ extern char Window_Title[255];
 char Window_Title[255];
 extern char Icon_Title[255];
 char Icon_Title[255];
+extern char cursorForegroundColor[256];
+char cursorForegroundColor[256] = {0};
 
 extern char sysout_name[];
 extern unsigned sysout_size;
@@ -233,7 +235,7 @@ void read_Xoption(int *argc, char *argv[])
   }
 
   envname = getenv("HOME");
-  (void)strcat(tmp, envname);
+  (void)strcpy(tmp, envname);
   (void)strcat(tmp, "/.Xdefaults");
   if (access(tmp, R_OK) != 0) {
     serverDB = XrmGetFileDatabase(tmp);
@@ -279,6 +281,10 @@ void read_Xoption(int *argc, char *argv[])
     (void)strncpy(tmp, value.addr, value.size);
     bitmask = XParseGeometry(tmp, &LispDisplayRequestedX, &LispDisplayRequestedY,
                              &LispDisplayRequestedWidth, &LispDisplayRequestedHeight);
+  }
+
+  if (XrmGetResource(rDB, "ldex.cursor.foreground", "Ldex.cursor.foreground", str_type, &value) == True) {
+    (void)strncpy(cursorForegroundColor, value.addr, sizeof(cursorForegroundColor) - 1);
   }
 
   (void)strcpy(tmp, ""); /* Clear the string */
